@@ -8,11 +8,13 @@ import samc.livesplitnotes.Configuration;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
 public class Settings extends JFrame {
 
@@ -47,6 +49,9 @@ public class Settings extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		URL icon = getClass().getResource("/favicon-32x32.png");
+		setIconImage(new ImageIcon(icon).getImage());
 
 		JLabel lblAddress = new JLabel("Livesplit Server address:");
 		lblAddress.setBounds(10, 27, 142, 14);

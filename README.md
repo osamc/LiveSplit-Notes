@@ -6,7 +6,7 @@ It was created with the purpose to allow new runners a simpler way to manage the
 
 
 ## Configuration
-![Config](https://i.imgur.com/CUjQlU3.png)
+![Config](https://i.imgur.com/75B8N8c.png)
 
 By default, the application will point to the default port of the LivesSplit server and assume that it is running on the local machine. 
 The application uses polling to determine the information from the server as there is currently no sort of notification system. The poll rate is measured in ms.
