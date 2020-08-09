@@ -42,36 +42,36 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2-beta-4</version>
-					<configuration>
-						<descriptorRefs>
-							<descriptorRef>jar-with-dependencies</descriptorRef>
-						</descriptorRefs>
-						<archive>
-							<manifest>
-								<mainClass>samc.livesplitnotes.ui.Notes</mainClass>
-								
-							</manifest>
-						</archive>
-					</configuration>
-					<executions>
-						<execution>
-							<phase>package</phase>
-							<goals>
-								<goal>single</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				
-				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-4</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>samc.livesplitnotes.ui.Notes</mainClass>
+
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.7.16</version>
+				<version>1.7.25</version>
 				<executions>
 					<execution>
 						<id>l4j</id>
@@ -89,14 +89,22 @@
 								<addDependencies>true</addDependencies>
 							</classPath>
 							<jre>
-								<minVersion>1.8.0</minVersion>
-							</jre>
 							
+							<minVersion>1.4.0</minVersion>
+							<opts>
+								<opt>-Dlaunch4j.exedir="%EXEDIR%"</opt>
+								<opt>-Dlaunch4j.exefile="%EXEFILE%"</opt>
+								<opt>-Xmx100m</opt>
+								<opt>-XX:+UseCompressedOops</opt>
+							</opts>
+								
+								
+							</jre>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
@@ -116,31 +124,29 @@
 								<mainClass>samc.livesplitnotes.ui.Notes</mainClass>
 							</classPath>
 							<jre>
-								<minVersion>1.8.0</minVersion>	
+								<minVersion>1.8.0</minVersion>
 							</jre>
 							<versionInfo>
 								<fileVersion>1.0.0.0</fileVersion>
-                                <txtFileVersion>1.0.0.0</txtFileVersion>
-                                <fileDescription>LiveSplit Notes</fileDescription>
-                                <copyright>Copyright (c) 2020 </copyright>
-                                <productVersion>3.0.0.0</productVersion>
-                                <txtProductVersion>${project.version}</txtProductVersion>
-                                <productName>Project</productName>
-                                <internalName>Project</internalName>
-                                <originalFilename>Project.exe</originalFilename>
+								<txtFileVersion>1.0.0.0</txtFileVersion>
+								<fileDescription>LiveSplit Notes</fileDescription>
+								<copyright>Copyright (c) 2020 </copyright>
+								<productVersion>3.0.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>Project</productName>
+								<internalName>Project</internalName>
+								<originalFilename>Project.exe</originalFilename>
 							</versionInfo>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
-			
+
+
 		</plugins>
 
-		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
-				defaults (may be moved to parent pom) -->
+		<pluginManagement>
 			<plugins>
-
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -152,10 +158,6 @@
 						</archive>
 					</configuration>
 				</plugin>
-
-				
-
-			
 			</plugins>
 		</pluginManagement>
 	</build>

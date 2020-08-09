@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
@@ -52,23 +53,23 @@ public class Notes {
 
 	private JToolBar toolBar;
 	private JMenuBar menuBar;
-	
+
 	private JMenu mnConfig;
 	private JCheckBoxMenuItem chckbxOnTop;
 	private JCheckBoxMenuItem chckbxKeyHooks;
 	private JMenuItem mntmOpen;
 	private JMenuItem mntmSettings;
-	
+
 	private JMenu mnConnection;
 	private JMenuItem mntmConnect;
-	
+
 	private JFileChooser chooser;
 
 	private NoteReader reader = new NoteReader();
 	private Notes self;
 
 	private Configuration config;
-	
+
 	private Socket socket;
 	private GlobalKeyboardHook keyboardHook;
 
@@ -90,7 +91,7 @@ public class Notes {
 	public Notes() throws PropertyVetoException {
 		initialize();
 	}
-	
+
 	private void initialize() {
 
 		this.self = this;
@@ -111,10 +112,10 @@ public class Notes {
 		this.updateUI();
 
 	}
-	
+
 	private void initComponents() {
 		this.frame = new JFrame();
-		
+
 		frame.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -124,7 +125,7 @@ public class Notes {
 				} else if (keyCode == config.getForwardKey()) {
 					reader.next();
 				}
-				
+
 				updateUI();
 			}
 		});
@@ -132,9 +133,9 @@ public class Notes {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setFocusable(true);
-		
+
 		URL icon = getClass().getResource("/favicon-32x32.png");
-		
+
 		frame.setIconImage(new ImageIcon(icon).getImage());
 
 		frame.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -150,8 +151,7 @@ public class Notes {
 		frame.getContentPane().add(scrollPane);
 
 		Preferences prefs = Preferences.userRoot().node(getClass().getName());
-		chooser = new JFileChooser(prefs.get("last_used_folder",
-			    new File(".").getAbsolutePath()));
+		chooser = new JFileChooser(prefs.get("last_used_folder", new File(".").getAbsolutePath()));
 
 		scrollPane.setColumnHeaderView(toolBar);
 
@@ -162,16 +162,16 @@ public class Notes {
 		mnConnection = new JMenu("Connection");
 		mntmConnect = new JMenuItem("Connect");
 		mnConnection.add(mntmConnect);
-		
+
 		menuBar.add(mnConnection);
-	
+
 		mnConfig = new JMenu("Config");
 		mntmOpen = new JMenuItem("Open Notes");
 		mntmSettings = new JMenuItem("Settings");
-		
+
 		chckbxOnTop = new JCheckBoxMenuItem("Always On Top");
 		chckbxKeyHooks = new JCheckBoxMenuItem("Global Keyhooks");
-	
+
 		mnConfig.add(chckbxOnTop);
 		mnConfig.add(chckbxKeyHooks);
 		mnConfig.add(mntmOpen);
@@ -185,7 +185,7 @@ public class Notes {
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.setAlwaysOnTop(false);
-				
+
 				int returnVal = chooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					Preferences prefs = Preferences.userRoot().node(getClass().getName());
@@ -224,14 +224,14 @@ public class Notes {
 				updateUI();
 			}
 		});
-		
+
 		chckbxOnTop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				config.setAlwaysOnTop(chckbxOnTop.isSelected());
 				updateUI();
 			}
 		});
-		
+
 		chckbxKeyHooks.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				config.setGlobalKeyHooks(chckbxKeyHooks.isSelected());
@@ -246,16 +246,16 @@ public class Notes {
 	}
 
 	private void updateUI() {
-		
+
 		if (reader.isInitialised()) {
 			this.editorPane.setText(reader.getCurrentNote());
 		}
-		
+
 		this.frame.setTitle(this.generateTitle());
 		this.frame.setAlwaysOnTop(this.config.isAlwaysOnTop());
 		this.chckbxOnTop.setSelected(this.config.isAlwaysOnTop());
 		this.chckbxKeyHooks.setSelected(this.config.isGlobalKeyHooks());
-		
+
 		if (this.config.isGlobalKeyHooks()) {
 			this.initGlobalHooks();
 		} else {
@@ -263,11 +263,11 @@ public class Notes {
 		}
 
 		this.mntmConnect.setText(this.socket != null && this.socket.isConnected() ? "Disconnect" : "Connect");
-		
+
 		this.config.save();
-		
+
 	}
-	
+
 	public String generateTitle() {
 		String title = "Split Notes: ";
 		if (this.config.getFile() != null) {
@@ -275,10 +275,10 @@ public class Notes {
 		} else {
 			title += "No Chosen File";
 		}
-		
+
 		title += " - ";
 		title += this.socket == null ? "Disconnected" : "Connected";
-		
+
 		return title;
 	}
 
@@ -298,13 +298,13 @@ public class Notes {
 	}
 
 	private void initGlobalHooks() {
-		
+
 		if (this.keyboardHook != null && this.keyboardHook.isAlive()) {
 			this.disableHooks();
-		} 
-			
+		}
+
 		keyboardHook = new GlobalKeyboardHook(true);
-		
+
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 
 			@Override
@@ -368,31 +368,27 @@ public class Notes {
 		}
 	}
 
-	private void send(String str, OutputStreamWriter o) throws IOException {
-		o.write(str, 0, str.length());
-		o.flush();
-	}
 
 	public void getSplit() {
 
 		String str = "getsplitindex\r\n";
 
-		OutputStreamWriter osw;
-		try {
-			osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
-			send(str, osw);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		try (OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+			
+			osw.write(str, 0, str.length());
+			osw.flush();
 
 			String res = reader.readLine();
 			Integer split = Integer.valueOf(res);
 
 			this.reader.setNote(split < 0 ? 0 : split);
 			this.updateUI();
-
+			
 		} catch (IOException e) {
+
 			this.socket = null;
 			this.pollThread.shutdown();
-
 		}
 
 	}

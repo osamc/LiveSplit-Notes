@@ -55,7 +55,7 @@ public class NoteReader {
 	public void next() {
 		this.currentNote++;
 		
-		if (this.currentNote > this.notes.size()) {
+		if (this.currentNote >= this.notes.size()) {
 			this.currentNote = this.notes.size() - 1;
 		}
 		
