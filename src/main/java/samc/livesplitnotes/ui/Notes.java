@@ -368,13 +368,20 @@ public class Notes {
 		}
 	}
 
+	private void send(String str, OutputStreamWriter o) throws IOException {
+		
+	}
 
 	public void getSplit() {
 
 		String str = "getsplitindex\r\n";
 
-		try (OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
-				BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+		try {
+			
+			OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			
+			send(str, osw);
 			
 			osw.write(str, 0, str.length());
 			osw.flush();
@@ -384,7 +391,6 @@ public class Notes {
 
 			this.reader.setNote(split < 0 ? 0 : split);
 			this.updateUI();
-			
 		} catch (IOException e) {
 
 			this.socket = null;
